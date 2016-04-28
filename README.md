@@ -1,10 +1,18 @@
 # sails-auth
-
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
 
 [Passport](http://passportjs.org/)-based User Authentication system for Sails.js applications.
+
+**This repo is forked from langateam/sails-auth**
+
+###### Revision Notes:
+- Pure JavaScript: Compiled version from langateam/sails-auth.
+- Installable: Can be installed via github URL.
+
+
+
 
 ## 1. Install
 ```sh
