@@ -1,3 +1,5 @@
+'use strict';
+
 var path = require('path');
 var url = require('url');
 var passport = require('passport');
@@ -64,7 +66,7 @@ passport.protocols = require('./protocols');
  * @param {Function} next
  */
 passport.connect = function (req, query, profile, next) {
-  var user = { };
+  var user = {};
 
   req.session.tokens = query.tokens;
 
@@ -77,7 +79,7 @@ passport.connect = function (req, query, profile, next) {
 
   // If the provider cannot be identified we cannot match it to a passport so
   // throw an error and let whoever's next in line take care of it.
-  if (!provider){
+  if (!provider) {
     return next(new Error('No authentication provider was identified.'));
   }
 
@@ -101,67 +103,55 @@ passport.connect = function (req, query, profile, next) {
   }
 
   sails.models.passport.findOne({
-      provider: provider,
-      identifier: query.identifier.toString()
-    })
-    .then(function (passport) {
-      if (!req.user) {
-        // Scenario: A new user is attempting to sign up using a third-party
-        //           authentication provider.
-        // Action:   Create a new user and assign them a passport.
-        if (!passport) {
-          return sails.models.user.create(user)
-            .then(function (_user) {
-              user = _user;
-              return sails.models.passport.create(_.extend({ user: user.id }, query))
-            })
-            .then(function (passport) {
-              next(null, user);
-            })
-            .catch(next);
-
-        }
-        // Scenario: An existing user is trying to log in using an already
-        //           connected passport.
-        // Action:   Get the user associated with the passport.
-        else {
+    provider: provider,
+    identifier: query.identifier.toString()
+  }).then(function (passport) {
+    if (!req.user) {
+      // Scenario: A new user is attempting to sign up using a third-party
+      //           authentication provider.
+      // Action:   Create a new user and assign them a passport.
+      if (!passport) {
+        return sails.models.user.create(user).then(function (_user) {
+          user = _user;
+          return sails.models.passport.create(_.extend({ user: user.id }, query));
+        }).then(function (passport) {
+          next(null, user);
+        })['catch'](next);
+      }
+      // Scenario: An existing user is trying to log in using an already
+      //           connected passport.
+      // Action:   Get the user associated with the passport.
+      else {
           // If the tokens have changed since the last session, update them
           if (_.has(query, 'tokens') && query.tokens != passport.tokens) {
             passport.tokens = query.tokens;
           }
 
           // Save any updates to the Passport before moving on
-          return passport.save()
-            .then(function () {
+          return passport.save().then(function () {
 
-              // Fetch the user associated with the Passport
-              return sails.models.user.findOne(passport.user);
-            })
-            .then(function (user) {
-              next(null, user);
-            })
-            .catch(next);
+            // Fetch the user associated with the Passport
+            return sails.models.user.findOne(passport.user);
+          }).then(function (user) {
+            next(null, user);
+          })['catch'](next);
         }
+    } else {
+      // Scenario: A user is currently logged in and trying to connect a new
+      //           passport.
+      // Action:   Create and assign a new passport to the user.
+      if (!passport) {
+        return sails.models.passport.create(_.extend({ user: req.user.id }, query)).then(function (passport) {
+          next(null, req.user);
+        })['catch'](next);
       }
+      // Scenario: The user is a nutjob or spammed the back-button.
+      // Action:   Simply pass along the already established session.
       else {
-        // Scenario: A user is currently logged in and trying to connect a new
-        //           passport.
-        // Action:   Create and assign a new passport to the user.
-        if (!passport) {
-          return sails.models.passport.create(_.extend({ user: req.user.id }, query))
-            .then(function (passport) {
-              next(null, req.user);
-            })
-            .catch(next);
-        }
-        // Scenario: The user is a nutjob or spammed the back-button.
-        // Action:   Simply pass along the already established session.
-        else {
           next(null, req.user);
         }
-      }
-    })
-    .catch(next)
+    }
+  })['catch'](next);
 };
 
 /**
@@ -176,7 +166,7 @@ passport.connect = function (req, query, profile, next) {
 passport.endpoint = function (req, res) {
   var strategies = sails.config.passport;
   var provider = req.param('provider');
-  var options = { };
+  var options = {};
 
   // If a provider doesn't exist for this endpoint, send the user back to the
   // login page
@@ -214,22 +204,17 @@ passport.callback = function (req, res, next) {
   if (provider === 'local' && action !== undefined) {
     if (action === 'register' && !req.user) {
       this.protocols.local.register(req, res, next);
-    }
-    else if (action === 'connect' && req.user) {
+    } else if (action === 'connect' && req.user) {
       this.protocols.local.connect(req, res, next);
-    }
-    else if (action === 'disconnect' && req.user) {
+    } else if (action === 'disconnect' && req.user) {
       this.protocols.local.disconnect(req, res, next);
-    }
-    else {
+    } else {
       next(new Error('Invalid action'));
     }
-  }
-  else {
+  } else {
     if (action === 'disconnect' && req.user) {
-      this.disconnect(req, res, next) ;
-    }
-    else {
+      this.disconnect(req, res, next);
+    } else {
       // The provider will redirect the user to this URL after approval. Finish
       // the authentication process by attempting to obtain an access token. If
       // access was granted, the user will be logged in. Otherwise, authentication
@@ -278,8 +263,7 @@ passport.loadStrategies = function () {
 
         passport.use(new Strategy(options, this.protocols.local.login));
       }
-    }
-    else {
+    } else {
       var protocol = strategies[key].protocol;
       var callback = strategies[key].callback;
 
@@ -291,9 +275,8 @@ passport.loadStrategies = function () {
 
       var baseUrl = '';
       if (sails.config.appUrl !== null) {
-        baseUrl = sails.config.appUrl
-      }
-      else {
+        baseUrl = sails.config.appUrl;
+      } else {
         sails.log.warn('Please add "appUrl" configuration value.');
         baseUrl = sails.getBaseurl();
       }
@@ -306,8 +289,8 @@ passport.loadStrategies = function () {
 
         case 'openid':
           options.returnURL = url.resolve(baseUrl, callback);
-          options.realm     = baseUrl;
-          options.profile   = true;
+          options.realm = baseUrl;
+          options.profile = true;
           break;
       }
 
@@ -332,17 +315,14 @@ passport.disconnect = function (req, res, next) {
   var provider = req.param('provider');
 
   return sails.models.passport.findOne({
-      provider: provider,
-      user: user.id
-    })
-    .then(function (passport) {
-      return sails.models.passport.destroy(passport.id)
-    })
-    .then(function (error) {
-      next(null, user);
-      return user
-    })
-    .catch(next)
+    provider: provider,
+    user: user.id
+  }).then(function (passport) {
+    return sails.models.passport.destroy(passport.id);
+  }).then(function (error) {
+    next(null, user);
+    return user;
+  })['catch'](next);
 };
 
 passport.serializeUser(function (user, next) {
@@ -350,13 +330,10 @@ passport.serializeUser(function (user, next) {
 });
 
 passport.deserializeUser(function (id, next) {
-  return sails.models.user.findOne(id)
-    .then(function (user) {
-      next(null, user || null);
-      return user;
-    })
-    .catch(next)
-
+  return sails.models.user.findOne(id).then(function (user) {
+    next(null, user || null);
+    return user;
+  })['catch'](next);
 });
 
 module.exports = passport;

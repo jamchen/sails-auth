@@ -5,11 +5,13 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
+"use strict";
+
 module.exports = {
   /**
    * @override
    */
-  create: function (req, res, next) {
+  create: function create(req, res, next) {
     sails.services.passport.protocols.local.register(req.body, function (err, user) {
       if (err) return res.negotiate(err);
 
@@ -17,7 +19,7 @@ module.exports = {
     });
   },
 
-  update: function (req, res, next) {
+  update: function update(req, res, next) {
     sails.services.passport.protocols.local.update(req.body, function (err, user) {
       if (err) return res.negotiate(err);
 
@@ -25,8 +27,7 @@ module.exports = {
     });
   },
 
-  me: function (req, res) {
+  me: function me(req, res) {
     res.ok(req.user);
   }
 };
-

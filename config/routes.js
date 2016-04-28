@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports.routes = {
   'post /register': 'UserController.create',
   'post /logout': 'AuthController.logout',

@@ -1,3 +1,5 @@
+'use strict';
+
 var bcrypt = require('bcryptjs');
 
 /**
@@ -6,7 +8,7 @@ var bcrypt = require('bcryptjs');
  * @param {Object}   password
  * @param {Function} next
  */
-function hashPassword (passport, next) {
+function hashPassword(passport, next) {
   var config = sails.config.auth.bcrypt;
   var salt = config.salt || config.rounds;
   if (passport.password) {
@@ -19,8 +21,7 @@ function hashPassword (passport, next) {
       passport.password = hash;
       next(null, passport);
     });
-  }
-  else {
+  } else {
     next(null, passport);
   }
 }
@@ -66,9 +67,9 @@ var Passport = {
     // dards. When using OAuth 1.0, a `token` as well as a `tokenSecret` will
     // be issued by the provider. In the case of OAuth 2.0, an `accessToken`
     // and a `refreshToken` will be issued.
-    provider   : { type: 'alphanumericdashed' },
-    identifier : { type: 'string' },
-    tokens     : { type: 'json' },
+    provider: { type: 'alphanumericdashed' },
+    identifier: { type: 'string' },
+    tokens: { type: 'json' },
 
     // Associations
     //
@@ -85,7 +86,7 @@ var Passport = {
      * @param {string}   password The password to validate
      * @param {Function} next
      */
-    validatePassword: function (password, next) {
+    validatePassword: function validatePassword(password, next) {
       bcrypt.compare(password, this.password, next);
     }
 
@@ -97,7 +98,7 @@ var Passport = {
    * @param {Object}   passport The soon-to-be-created Passport
    * @param {Function} next
    */
-  beforeCreate: function (passport, next) {
+  beforeCreate: function beforeCreate(passport, next) {
     hashPassword(passport, next);
   },
 
@@ -107,7 +108,7 @@ var Passport = {
    * @param {Object}   passport Values to be updated
    * @param {Function} next
    */
-  beforeUpdate: function (passport, next) {
+  beforeUpdate: function beforeUpdate(passport, next) {
     hashPassword(passport, next);
   }
 };

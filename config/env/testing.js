@@ -10,6 +10,8 @@
  *
  */
 
+'use strict';
+
 module.exports = {
   log: { level: 'debug' },
   models: {
@@ -28,7 +30,7 @@ module.exports = {
   },
   policies: {
     '*': ['basicAuth', 'passport', 'sessionAuth'],
-    AuthController: { '*': [ 'passport' ] },
+    AuthController: { '*': ['passport'] },
     UserController: { create: true }
   },
   port: 1448

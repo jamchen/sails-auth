@@ -9,6 +9,8 @@
  * http://sailsjs.org/#/documentation/concepts/ORM
  */
 
+"use strict";
+
 module.exports.models = {
 
   /***************************************************************************

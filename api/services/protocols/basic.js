@@ -1,3 +1,5 @@
+'use strict';
+
 var localProtocol = require('./local');
 
 module.exports = function (req, username, password, next) {

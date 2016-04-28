@@ -15,10 +15,12 @@
  * @param {Object}   profile
  * @param {Function} next
  */
+'use strict';
+
 module.exports = function (req, identifier, profile, next) {
-  var query    = {
-    identifier : identifier
-  , protocol   : 'openid'
+  var query = {
+    identifier: identifier,
+    protocol: 'openid'
   };
 
   sails.services.passport.connect(req, query, profile, next);

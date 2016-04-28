@@ -1,6 +1,8 @@
 /**
  * Authentication Controller
  */
+'use strict';
+
 module.exports = {
 
   /**
@@ -17,7 +19,7 @@ module.exports = {
    * @param {Object} req
    * @param {Object} res
    */
-  logout: function (req, res) {
+  logout: function logout(req, res) {
     req.logout();
     delete req.user;
     delete req.session.passport;
@@ -25,8 +27,7 @@ module.exports = {
 
     if (!req.isSocket) {
       res.redirect(req.query.next || '/');
-    }
-    else {
+    } else {
       res.ok();
     }
   },
@@ -37,7 +38,7 @@ module.exports = {
    * @param {Object} req
    * @param {Object} res
    */
-  provider: function (req, res) {
+  provider: function provider(req, res) {
     sails.services.passport.endpoint(req, res);
   },
 
@@ -57,20 +58,17 @@ module.exports = {
    * @param {Object} req
    * @param {Object} res
    */
-  callback: function (req, res) {
+  callback: function callback(req, res) {
     var action = req.param('action');
 
-    function negotiateError (err) {
+    function negotiateError(err) {
       if (action === 'register') {
         res.redirect('/register');
-      }
-      else if (action === 'login') {
+      } else if (action === 'login') {
         res.redirect('/login');
-      }
-      else if (action === 'disconnect') {
+      } else if (action === 'disconnect') {
         res.redirect('back');
-      }
-      else {
+      } else {
         // make sure the server always returns a response to the client
         // i.e passport-local bad username/email or password
         res.send(403, err);
@@ -110,7 +108,7 @@ module.exports = {
    * @param {Object} req
    * @param {Object} res
    */
-  disconnect: function (req, res) {
+  disconnect: function disconnect(req, res) {
     sails.services.passport.disconnect(req, res);
   }
 };

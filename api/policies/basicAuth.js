@@ -1,3 +1,5 @@
+'use strict';
+
 var localProtocol = require('../services/protocols/local');
 /**
  * basicAuth
@@ -23,7 +25,7 @@ module.exports = function (req, res, next) {
     }
     if (!user) {
       req.session.authenticated = false;
-      return res.status(403).json({ error: 'Could not authenticate user '+ username });
+      return res.status(403).json({ error: 'Could not authenticate user ' + username });
     }
 
     req.user = user;
