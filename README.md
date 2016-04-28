@@ -69,7 +69,7 @@ For comprehensive user account control with role-based permissioning, object own
 ## License
 MIT
 
-## Maintained By
+## Original Fork is Maintained By
 [<img src='http://i.imgur.com/Y03Jgmf.png' height='64px'>](http://langa.io)
 - [Travis Webb](https://github.com/tjwebb)
 - [Ryan Quinn](https://github.com/ryanwilliamquinn)
