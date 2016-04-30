@@ -115,7 +115,11 @@ passport.connect = function (req, query, profile, next) {
           user = _user;
           return sails.models.passport.create(_.extend({ user: user.id }, query));
         }).then(function (passport) {
-          next(null, user);
+          if (User.afterConnectToPassport) {
+            User.afterConnectToPassport(user, passport, next);
+          } else {
+            next(null, user);
+          }
         })['catch'](next);
       }
       // Scenario: An existing user is trying to log in using an already
@@ -142,7 +146,11 @@ passport.connect = function (req, query, profile, next) {
       // Action:   Create and assign a new passport to the user.
       if (!passport) {
         return sails.models.passport.create(_.extend({ user: req.user.id }, query)).then(function (passport) {
-          next(null, req.user);
+          if (User.afterConnectToPassport) {
+            User.afterConnectToPassport(req.user, passport, next);
+          } else {
+            next(null, user);
+          }
         })['catch'](next);
       }
       // Scenario: The user is a nutjob or spammed the back-button.
