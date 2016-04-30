@@ -22,10 +22,8 @@ module.exports = {
       via: 'user'
     },
 
-    getGravatarUrl: function getGravatarUrl() {
-      var md5 = crypto.createHash('md5');
-      md5.update(this.email || '');
-      return 'https://gravatar.com/avatar/' + md5.digest('hex');
+    getGravatarUrl: function getGravatarUrl(email) {
+      return User.getGravatarUrl(this.email);
     },
 
     toJSON: function toJSON() {
@@ -54,5 +52,12 @@ module.exports = {
         resolve(created);
       });
     });
+  },
+
+  getGravatarUrl: function getGravatarUrl(email) {
+    var md5 = crypto.createHash('md5');
+    md5.update(email || '');
+    return 'https://gravatar.com/avatar/' + md5.digest('hex');
   }
+
 };
