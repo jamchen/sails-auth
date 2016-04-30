@@ -22,7 +22,7 @@ module.exports = {
       via: 'user'
     },
 
-    getGravatarUrl: function getGravatarUrl(email) {
+    getGravatarUrl: function getGravatarUrl() {
       return User.getGravatarUrl(this.email);
     },
 
