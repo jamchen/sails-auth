@@ -190,6 +190,7 @@ passport.endpoint = function (req, res) {
   // Redirect the user to the provider for authentication. When complete,
   // the provider will redirect the user back to the application at
   //     /auth/:provider/callback
+  if (req.query.next) {
   this.authenticate(provider, options)(req, res, req.next);
 };
 

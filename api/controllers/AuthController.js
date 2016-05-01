@@ -89,9 +89,13 @@ module.exports = {
 
         req.session.authenticated = true;
 
-        // Upon successful login, optionally redirect the user if there is a
-        // `next` query param
-        if (req.query.next) {
+        if (req.session.returnTo) {
+          var url = req.session.returnTo;
+          delete req.session.returnTo;
+          res.status(302).set('Location', url);
+        } else if (req.query.next) {
+          // Upon successful login, optionally redirect the user if there is a
+          // `next` query param
           var url = sails.services.authservice.buildCallbackNextUrl(req);
           res.status(302).set('Location', url);
         }
