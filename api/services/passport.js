@@ -191,6 +191,11 @@ passport.endpoint = function (req, res) {
   // the provider will redirect the user back to the application at
   //     /auth/:provider/callback
   if (req.query.next) {
+    options.successReturnToOrRedirect = req.query.next;
+    if (req.session) {
+      req.session.returnTo = req.query.next;
+    }
+  }
   this.authenticate(provider, options)(req, res, req.next);
 };
 
